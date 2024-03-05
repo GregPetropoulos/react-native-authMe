@@ -1,7 +1,11 @@
+import { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import LoginScreen from './screens/LoginScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import SignupScreen from './screens/SignupScreen';
+
+import AuthContextProvider from './store/auth-context';
+import { AuthContext } from './store/auth-context';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -36,9 +40,12 @@ const AuthenticatedStack = () => {
   );
 };
 const Navigation = () => {
+  const authCtx = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      <AuthStack />
+      {!authCtx.isAuthenticated && <AuthStack />}
+      {authCtx.isAuthenticated && <AuthenticatedStack />}
     </NavigationContainer>
   );
 };
@@ -47,7 +54,9 @@ export default function App() {
   return (
     <>
       <StatusBar status='light' />
-      <Navigation />
+      <AuthContextProvider>
+        <Navigation />
+      </AuthContextProvider>
     </>
   );
 }
