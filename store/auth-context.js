@@ -1,5 +1,5 @@
-import { createContext, useState, useReducer } from 'react';
-
+import { createContext, useState, useReducer} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AuthContext = createContext({
   token: '',
   isAuthenticated: false,
@@ -12,25 +12,22 @@ const initialState = {
   isAuthenticated: false
 };
 
-// const authReducer = (state, action) => {
-//   switch (action.type) {
-//     case 'LOGIN':
-//       return state;
-
-//     default:
-//       break;
-//   }
-// };
 
 const AuthContextProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState();
-  //   const [authState, dispatch] = useReducer(authReducer, initialState);
+
   const authenticate = (token) => {
     setAuthToken(token);
+    // Need to store the token on the device so when the app is closed the user does not have login every time
+
+    // args in seItem must be strings
+    AsyncStorage.setItem('token', token);
   };
 
   const logout = () => {
     setAuthToken(null);
+    AsyncStorage.removeItem('token');
+
   };
 
   const value = {
